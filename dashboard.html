@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Reservas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; background:#f4f4f4; margin:0; padding:0;}
+    header { background:#2c3e50; color:white; padding:1rem; text-align:center;}
+    main { padding:2rem; }
+    table { width:100%; border-collapse: collapse; background:white; margin-bottom:2rem; border-radius:10px; overflow:hidden; }
+    th, td { padding:0.8rem; text-align:left; border-bottom:1px solid #ddd; }
+    th { background:#34495e; color:white; }
+    tr:hover { background:#ecf0f1; }
+    button { margin-right:0.3rem; padding:0.3rem 0.6rem; border:none; border-radius:5px; cursor:pointer; }
+    .excluir { background:#e74c3c; color:white; }
+    .excluir:hover { background:#c0392b; }
+    .whatsapp { background:#25d366; color:white; }
+    .whatsapp:hover { background:#1ebe5d; }
+    .confirmado { color: green; font-weight:bold; }
+    .pendente { color: orange; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dashboard de Reservas</h1>
+  </header>
+
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>Chalé</th>
+          <th>Cliente</th>
+          <th>Telefone</th>
+          <th>Check-in</th>
+          <th>Check-out</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody class="lista-reservas"></tbody>
+    </table>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD1Q8VDgI1KdCno6KGuS8qg7Ms-9lpUjbc",
+      authDomain: "chales-serra.firebaseapp.com",
+      projectId: "chales-serra",
+      storageBucket: "chales-serra.firebasestorage.app",
+      messagingSenderId: "48224143566",
+      appId: "1:48224143566:web:ca3a46c5a6ad3561c0a89f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function carregarReservas() {
+      const tbody = document.querySelector('.lista-reservas');
+      tbody.innerHTML = '';
+
+      const snapshot = await getDocs(collection(db, "reservas"));
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const statusClass = data.status === "Confirmado" ? "confirmado" : "pendente";
+        const statusText = data.status || "Pendente";
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${data.chaleId}</td>
+          <td>${data.cliente}</td>
+          <td>${data.telefone || 'Sem telefone'}</td>
+          <td>${data.checkin}</td>
+          <td>${data.checkout}</td>
+          <td class="${statusClass}">${statusText}</td>
+          <td>
+            <button class="excluir" data-id="${docSnap.id}">Excluir</button>
+            <button class="whatsapp" data-id="${docSnap.id}" data-cliente="${data.cliente}" data-telefone="${data.telefone}" data-chale="${data.chaleId}" data-checkin="${data.checkin}" data-checkout="${data.checkout}">Confirmar Zap</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Deletar reserva
+      document.querySelectorAll('.excluir').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.id;
+          const result = await Swal.fire({
+            title: '⚠️ Tem certeza?',
+            text: "Essa reserva será excluída permanentemente!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#34495e',
+            confirmButtonText: 'Sim, excluir!',
+            cancelButtonText: 'Cancelar'
+          });
+          if (result.isConfirmed) {
+            await deleteDoc(doc(db, "reservas", id));
+            Swal.fire({
+              title: 'Excluído!',
+              text: 'A reserva foi removida.',
+              icon: 'success',
+              confirmButtonText: 'Ok'
+            });
+            carregarReservas();
+          }
+        });
+      });
+
+      // Confirmar pelo WhatsApp
+      document.querySelectorAll('.whatsapp').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const cliente = encodeURIComponent(btn.dataset.cliente);
+          const telefone = btn.dataset.telefone;
+          const chale = encodeURIComponent(btn.dataset.chale);
+          const checkin = btn.dataset.checkin;
+          const checkout = btn.dataset.checkout;
+          const id = btn.dataset.id;
+
+          const mensagem = `Olá!%0A%0ASua reserva foi confirmada:%0AChalé: ${chale}%0ACliente: ${cliente}%0ACheck-in: ${checkin}%0ACheck-out: ${checkout}%0A%0AObrigado!`;
+
+          window.open(`https://wa.me/${telefone}?text=${mensagem}`, '_blank');
+
+          await updateDoc(doc(db, "reservas", id), { status: "Confirmado" });
+          Swal.fire({
+            title: '✅ Confirmado!',
+            text: 'O cliente foi notificado via WhatsApp e o status atualizado.',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          });
+          carregarReservas();
+        });
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', carregarReservas);
+  </script>
+</body>
+</html>

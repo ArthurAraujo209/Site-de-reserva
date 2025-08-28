@@ -1,96 +1,184 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reserva de Chalés</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f4;
-      color: #333;
-    }
-    header {
-      background: #2c3e50;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-    }
-    .chalés {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1rem;
-      padding: 2rem;
-    }
-    .card {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      overflow: hidden;
-    }
-    .card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .card-body {
-      padding: 1rem;
-    }
-    .card-body h3 {
-      margin-top: 0;
-    }
-    .btn {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      background: #27ae60;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      text-decoration: none;
-      transition: background 0.3s;
-    }
-    .btn:hover {
-      background: #219150;
-    }
-    footer {
-      text-align: center;
-      padding: 1rem;
-      background: #2c3e50;
-      color: white;
-      margin-top: 2rem;
-    }
-  </style>
+  <link rel="stylesheet" href="css/index.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <header>
-    <h1>Chalés da Serra</h1>
+    <h1>Chalés da Serra Cuité PB</h1>
     <p>Reserve seu refúgio perfeito</p>
   </header>
 
-  <section class="chalés">
-    <div class="card">
-      <img src="https://picsum.photos/400/200?random=1" alt="Chalé 1">
-      <div class="card-body">
-        <h3>Chalé Vista da Montanha</h3>
-        <p>2 camas • 1 banheiro • Wi-Fi • Café da manhã</p>
-        <a href="https://wa.me/5599999999999?text=Quero%20reservar%20o%20Chal%C3%A9%20Vista%20da%20Montanha" class="btn">Reservar</a>
+  <main>
+    <section class="chales">
+      <div class="card" data-chale="vista-da-montanha">
+        <img src="img/chale.jpg" alt="Chalé 1">
+        <div class="card-body">
+          <h3>Chalé Vista da Montanha</h3>
+          <p>2 camas • 1 banheiro • Wi-Fi • Café da manhã</p>
+          <input type="text" class="cliente" placeholder="Seu nome">
+          <input type="text" class="telefone" placeholder="Seu WhatsApp (somente números)">
+          <input type="date" class="checkin">
+          <input type="date" class="checkout">
+          <button class="btn" onclick="reservar(this)">Reservar</button>
+          <h4>Reservas:</h4>
+          <ul class="lista-reservas"></ul>
+          <p class="indisponivel" style="color:red; font-weight:bold; display:none;">Indisponível!</p>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
-      <img src="https://picsum.photos/400/200?random=2" alt="Chalé 2">
-      <div class="card-body">
-        <h3>Chalé Beira do Lago</h3>
-        <p>3 camas • 2 banheiros • Piscina • Churrasqueira</p>
-        <a href="mailto:dono@chales.com?subject=Reserva%20Chal%C3%A9%20Beira%20do%20Lago" class="btn">Reservar</a>
+      <div class="card" data-chale="beira-do-lago">
+        <img src="img/chale.jpg" alt="Chalé 2">
+        <div class="card-body">
+          <h3>Chalé Beira do Lago</h3>
+          <p>3 camas • 2 banheiros • Piscina • Churrasqueira</p>
+          <input type="text" class="cliente" placeholder="Seu nome">
+          <input type="text" class="telefone" placeholder="Seu WhatsApp (somente números)">
+          <input type="date" class="checkin">
+          <input type="date" class="checkout">
+          <button class="btn" onclick="reservar(this)">Reservar</button>
+          <h4>Reservas:</h4>
+          <ul class="lista-reservas"></ul>
+          <p class="indisponivel" style="color:red; font-weight:bold; display:none;">Indisponível!</p>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <footer>
     <p>📞 WhatsApp: (84) 99999-9999 | ✉️ Email: dono@chales.com</p>
   </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD1Q8VDgI1KdCno6KGuS8qg7Ms-9lpUjbc",
+      authDomain: "chales-serra.firebaseapp.com",
+      projectId: "chales-serra",
+      storageBucket: "chales-serra.firebasestorage.app",
+      messagingSenderId: "48224143566",
+      appId: "1:48224143566:web:ca3a46c5a6ad3561c0a89f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function carregarReservas() {
+      const cards = document.querySelectorAll('.card');
+      for (let card of cards) {
+        const chaleId = card.dataset.chale;
+        const lista = card.querySelector('.lista-reservas');
+        lista.innerHTML = '';
+        const reservasRef = collection(db, "reservas");
+        const q = query(reservasRef, where("chaleId", "==", chaleId));
+        const snapshot = await getDocs(q);
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const li = document.createElement('li');
+          li.textContent = `${data.cliente}: ${data.checkin} à ${data.checkout}`;
+          lista.appendChild(li);
+        });
+      }
+    }
+
+    window.reservar = async function (btn) {
+      const cardBody = btn.closest('.card-body');
+      const card = btn.closest('.card');
+      const chaleId = card.dataset.chale;
+      const cliente = cardBody.querySelector('.cliente').value;
+      const checkin = cardBody.querySelector('.checkin').value;
+      const checkout = cardBody.querySelector('.checkout').value;
+      const telefone = cardBody.querySelector('.telefone').value;
+
+      if (!cliente || !checkin || !checkout || !telefone) {
+        Swal.fire({
+          title: '⚠️ Campos incompletos!',
+          text: 'Preencha todos os campos antes de reservar.',
+          icon: 'warning',
+          confirmButtonText: 'Ok'
+        });
+        return;
+      }
+
+      if (new Date(checkout) < new Date(checkin)) {
+        Swal.fire({
+          title: '⚠️ Data inválida!',
+          text: 'A data de check-out não pode ser antes do check-in.',
+          icon: 'warning',
+          confirmButtonText: 'Ok'
+        });
+        return;
+      }
+
+      try {
+        const reservasRef = collection(db, "reservas");
+
+        const q = query(
+          reservasRef,
+          where("chaleId", "==", chaleId),
+          where("checkin", "<=", checkout),
+          where("checkout", ">=", checkin)
+        );
+
+        const snapshot = await getDocs(q);
+
+        if (!snapshot.empty) {
+          Swal.fire({
+            title: '⚠️ Indisponível!',
+            text: 'O chalé já está reservado nessas datas.',
+            icon: 'error',
+            confirmButtonText: 'Ok'
+          });
+          return;
+        }
+
+        await addDoc(reservasRef, {
+          chaleId,
+          checkin,
+          checkout,
+          cliente,
+          telefone,
+          timestamp: new Date().toISOString()
+        });
+
+        Swal.fire({
+          title: '✅ Reserva Confirmada!',
+          html: `<p>Chalé: <b>${chaleId}</b></p>
+                 <p>Cliente: <b>${cliente}</b></p>
+                 <p>Check-in: <b>${checkin}</b></p>
+                 <p>Check-out: <b>${checkout}</b></p>`,
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        });
+
+        cardBody.querySelector('.cliente').value = '';
+        cardBody.querySelector('.checkin').value = '';
+        cardBody.querySelector('.checkout').value = '';
+        cardBody.querySelector('.telefone').value = '';
+
+        carregarReservas();
+      } catch (error) {
+        console.error("Erro ao reservar:", error);
+        Swal.fire({
+          title: '❌ Erro ao reservar',
+          text: 'Ocorreu um problema, veja o console.',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', carregarReservas);
+  </script>
 </body>
+
 </html>
