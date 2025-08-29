@@ -21,6 +21,7 @@
     .whatsapp:hover { background:#1ebe5d; }
     .confirmado { color: green; font-weight:bold; }
     .pendente { color: orange; font-weight:bold; }
+    .expirada { color: red; font-weight:bold; }
   </style>
 </head>
 <body>
@@ -69,10 +70,20 @@
 
       snapshot.forEach(docSnap => {
         const data = docSnap.data();
-        const statusClass = data.status === "Confirmado" ? "confirmado" : "pendente";
-        const statusText = data.status || "Pendente";
+        const hoje = new Date();
+        const checkoutDate = new Date(data.checkout);
+        let statusClass = data.status === "Confirmado" ? "confirmado" : "pendente";
+        let statusText = data.status || "Pendente";
+
+        // Se a reserva expirou
+        if (checkoutDate < hoje) {
+          statusClass = "expirada";
+          statusText = "Expirada";
+        }
 
         const tr = document.createElement('tr');
+        tr.dataset.id = docSnap.id;
+        tr.dataset.checkout = data.checkout;
         tr.innerHTML = `
           <td>${data.chaleId}</td>
           <td>${data.cliente}</td>
@@ -88,7 +99,7 @@
         tbody.appendChild(tr);
       });
 
-      // Deletar reserva
+      // Botão Excluir
       document.querySelectorAll('.excluir').forEach(btn => {
         btn.addEventListener('click', async () => {
           const id = btn.dataset.id;
@@ -104,18 +115,13 @@
           });
           if (result.isConfirmed) {
             await deleteDoc(doc(db, "reservas", id));
-            Swal.fire({
-              title: 'Excluído!',
-              text: 'A reserva foi removida.',
-              icon: 'success',
-              confirmButtonText: 'Ok'
-            });
+            Swal.fire('Excluído!', 'A reserva foi removida.', 'success');
             carregarReservas();
           }
         });
       });
 
-      // Confirmar pelo WhatsApp
+      // Botão WhatsApp
       document.querySelectorAll('.whatsapp').forEach(btn => {
         btn.addEventListener('click', async () => {
           const cliente = encodeURIComponent(btn.dataset.cliente);
@@ -130,18 +136,17 @@
           window.open(`https://wa.me/${telefone}?text=${mensagem}`, '_blank');
 
           await updateDoc(doc(db, "reservas", id), { status: "Confirmado" });
-          Swal.fire({
-            title: '✅ Confirmado!',
-            text: 'O cliente foi notificado via WhatsApp e o status atualizado.',
-            icon: 'success',
-            confirmButtonText: 'Ok'
-          });
+          Swal.fire('✅ Confirmado!', 'O cliente foi notificado via WhatsApp e o status atualizado.', 'success');
           carregarReservas();
         });
       });
     }
 
-    window.addEventListener('DOMContentLoaded', carregarReservas);
+    window.addEventListener('DOMContentLoaded', () => {
+      carregarReservas();
+      // Timer automático a cada 1 minuto
+      setInterval(carregarReservas, 60 * 1000);
+    });
   </script>
 </body>
 </html>
