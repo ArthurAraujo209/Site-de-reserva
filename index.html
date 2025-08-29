@@ -315,7 +315,7 @@
         }).then(async (result) => {
           if (result.isConfirmed) {
             const mensagem = `Olá! Quero enviar o comprovante da reserva:%0AChalé: ${chaleId}%0ACliente: ${cliente}%0ACheck-in: ${checkin}%0ACheck-out: ${checkout}%0ADIÁRIAS: ${diarias}%0ATOTAL: R$ ${valorTotal},00%0APIX: ${pix}`;
-            window.open(`https://wa.me/55839996607709?text=${mensagem}`, '_blank');
+            window.open(`https://wa.me/558396607709?text=${mensagem}`, '_blank');
           } else {
             await deleteDoc(doc(db, "reservas", docRef.id));
           }
