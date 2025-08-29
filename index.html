@@ -1,12 +1,87 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+  
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Chalés</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+    <style>
+    /* === Estilo Deluxe do Calendário === */
+     .flatpickr-input {
+      width: 250px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #2d6cdf;
+      background: #fff;
+      color: #333;
+      font-size: 16px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      margin: 10px 0;
+    }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reserva de Chalés</title>
-  <link rel="stylesheet" href="css/index.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    .flatpickr-input:focus {
+      border-color: #00a8ff;
+      box-shadow: 0 0 12px #00a8ff;
+      outline: none;
+    }
+
+    /* Calendário claro */
+    .flatpickr-calendar {
+      background: #fff !important;
+      border-radius: 16px;
+      border: 1px solid #ddd !important;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .flatpickr-day {
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      color: #333;
+    }
+
+    .flatpickr-day:hover {
+      background: #2d6cdf !important;
+      color: #fff !important;
+    }
+
+    .flatpickr-day.selected {
+      background: #00a8ff !important;
+      color: #fff !important;
+      font-weight: bold;
+    }
+
+    .flatpickr-day.booked {
+      background: #ff4d4d !important;
+      color: white !important;
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #2d6cdf, #00a8ff);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    }
+  </style>
 </head>
 
 <body>
@@ -17,35 +92,83 @@
 
   <main>
     <section class="chales">
-      <div class="card" data-chale="vista-da-montanha">
+      <!-- Chalé Grande 1 -->
+      <div class="card" data-chale="chale-grande-1">
         <img src="img/chale.jpg" alt="Chalé 1">
         <div class="card-body">
-          <h3>Chalé Vista da Montanha</h3>
-          <p>2 camas • 1 banheiro • Wi-Fi • Café da manhã</p>
+          <h3>Chalé Grande 1</h3>
+          <p>3 camas • 1 banheiro • Ar condicionado • Ventilador • Wi-Fi • TV a Cabo • Cozinha Completa</p>
           <input type="text" class="cliente" placeholder="Seu nome">
-          <input type="text" class="telefone" placeholder="Seu WhatsApp (somente números)">
-          <input type="date" class="checkin">
-          <input type="date" class="checkout">
+          <input type="text" class="telefone" placeholder="Seu WhatsApp (558312345678)">
+          <input type="text" class="checkin" placeholder="Check-in">
+          <input type="text" class="checkout" placeholder="Check-out">
           <button class="btn" onclick="reservar(this)">Reservar</button>
           <h4>Reservas:</h4>
           <ul class="lista-reservas"></ul>
-          <p class="indisponivel" style="color:red; font-weight:bold; display:none;">Indisponível!</p>
         </div>
       </div>
 
-      <div class="card" data-chale="beira-do-lago">
+      <!-- Chalé Grande 2 -->
+      <div class="card" data-chale="chale-grande-2">
         <img src="img/chale.jpg" alt="Chalé 2">
         <div class="card-body">
-          <h3>Chalé Beira do Lago</h3>
-          <p>3 camas • 2 banheiros • Piscina • Churrasqueira</p>
+          <h3>Chalé Grande 2</h3>
+          <p>3 camas • 1 banheiro • Ar condicionado • Ventilador • Wi-Fi • TV a Cabo • Cozinha Completa</p>
           <input type="text" class="cliente" placeholder="Seu nome">
           <input type="text" class="telefone" placeholder="Seu WhatsApp (somente números)">
-          <input type="date" class="checkin">
-          <input type="date" class="checkout">
+          <input type="text" class="checkin" placeholder="Check-in">
+          <input type="text" class="checkout" placeholder="Check-out">
           <button class="btn" onclick="reservar(this)">Reservar</button>
           <h4>Reservas:</h4>
           <ul class="lista-reservas"></ul>
-          <p class="indisponivel" style="color:red; font-weight:bold; display:none;">Indisponível!</p>
+        </div>
+      </div>
+
+      <!-- Chalé Grande 3 -->
+      <div class="card" data-chale="chale-grande-3">
+        <img src="img/chale.jpg" alt="Chalé 3">
+        <div class="card-body">
+          <h3>Chalé Grande 3</h3>
+          <p>3 camas • 1 banheiro • Ar condicionado • Ventilador • Wi-Fi • TV a Cabo • Cozinha Completa</p>
+          <input type="text" class="cliente" placeholder="Seu nome">
+          <input type="text" class="telefone" placeholder="Seu WhatsApp (somente números)">
+          <input type="text" class="checkin" placeholder="Check-in">
+          <input type="text" class="checkout" placeholder="Check-out">
+          <button class="btn" onclick="reservar(this)">Reservar</button>
+          <h4>Reservas:</h4>
+          <ul class="lista-reservas"></ul>
+        </div>
+      </div>
+
+      <!-- Chalé Grande 4 -->
+      <div class="card" data-chale="chale-grande-4">
+        <img src="img/chale.jpg" alt="Chalé 4">
+        <div class="card-body">
+          <h3>Chalé Grande 4</h3>
+          <p>3 camas • 1 banheiro • Ar condicionado • Ventilador • Wi-Fi • TV a Cabo • Cozinha Completa</p>
+          <input type="text" class="cliente" placeholder="Seu nome">
+          <input type="text" class="telefone" placeholder="Seu WhatsApp (somente números)">
+          <input type="text" class="checkin" placeholder="Check-in">
+          <input type="text" class="checkout" placeholder="Check-out">
+          <button class="btn" onclick="reservar(this)">Reservar</button>
+          <h4>Reservas:</h4>
+          <ul class="lista-reservas"></ul>
+        </div>
+      </div>
+
+      <!-- Chalé Pequeno -->
+      <div class="card" data-chale="pequeno">
+        <img src="img/chale.jpg" alt="Chalé 5">
+        <div class="card-body">
+          <h3>Chalé pequeno</h3>
+          <p>2 camas • 1 banheiros • Ar condicionado • Ventilador • Wifi • TV a Cabo</p>
+          <input type="text" class="cliente" placeholder="Seu nome">
+          <input type="text" class="telefone" placeholder="Seu WhatsApp (somente números)">
+          <input type="text" class="checkin" placeholder="Check-in">
+          <input type="text" class="checkout" placeholder="Check-out">
+          <button class="btn" onclick="reservar(this)">Reservar</button>
+          <h4>Reservas:</h4>
+          <ul class="lista-reservas"></ul>
         </div>
       </div>
     </section>
@@ -56,9 +179,10 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD1Q8VDgI1KdCno6KGuS8qg7Ms-9lpUjbc",
@@ -72,6 +196,14 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    function calcularDiarias(checkin, checkout) {
+      const dataIn = new Date(checkin);
+      const dataOut = new Date(checkout);
+      let diffDias = Math.floor((dataOut - dataIn) / (1000 * 60 * 60 * 24));
+      if (diffDias === 0) return 1;
+      return diffDias + 1;
+    }
+
     async function carregarReservas() {
       const cards = document.querySelectorAll('.card');
       for (let card of cards) {
@@ -81,11 +213,44 @@
         const reservasRef = collection(db, "reservas");
         const q = query(reservasRef, where("chaleId", "==", chaleId));
         const snapshot = await getDocs(q);
-        snapshot.forEach(doc => {
-          const data = doc.data();
+        const datasReservadas = [];
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
           const li = document.createElement('li');
           li.textContent = `${data.cliente}: ${data.checkin} à ${data.checkout}`;
           lista.appendChild(li);
+          let current = new Date(data.checkin);
+          while (current <= new Date(data.checkout)) {
+            datasReservadas.push(current.toISOString().split("T")[0]);
+            current.setDate(current.getDate() + 1);
+          }
+        });
+
+        const checkinInput = card.querySelector('.checkin');
+        const checkoutInput = card.querySelector('.checkout');
+
+        flatpickr(checkinInput, {
+          dateFormat: "Y-m-d",
+          minDate: "today",
+          disable: datasReservadas,
+          onDayCreate: (dObj, dStr, fp, dayElem) => {
+            const data = dayElem.dateObj.toISOString().split('T')[0];
+            if (datasReservadas.includes(data)) {
+              dayElem.classList.add("booked");
+            }
+          }
+        });
+
+        flatpickr(checkoutInput, {
+          dateFormat: "Y-m-d",
+          minDate: "today",
+          disable: datasReservadas,
+          onDayCreate: (dObj, dStr, fp, dayElem) => {
+            const data = dayElem.dateObj.toISOString().split('T')[0];
+            if (datasReservadas.includes(data)) {
+              dayElem.classList.add("booked");
+            }
+          }
         });
       }
     }
@@ -100,64 +265,61 @@
       const telefone = cardBody.querySelector('.telefone').value;
 
       if (!cliente || !checkin || !checkout || !telefone) {
-        Swal.fire({
-          title: '⚠️ Campos incompletos!',
-          text: 'Preencha todos os campos antes de reservar.',
-          icon: 'warning',
-          confirmButtonText: 'Ok'
-        });
+        Swal.fire({ title: '⚠️ Campos incompletos!', icon: 'warning' });
         return;
       }
 
       if (new Date(checkout) < new Date(checkin)) {
-        Swal.fire({
-          title: '⚠️ Data inválida!',
-          text: 'A data de check-out não pode ser antes do check-in.',
-          icon: 'warning',
-          confirmButtonText: 'Ok'
-        });
+        Swal.fire({ title: '⚠️ Data inválida!', icon: 'warning' });
         return;
       }
 
       try {
         const reservasRef = collection(db, "reservas");
-
         const q = query(
           reservasRef,
           where("chaleId", "==", chaleId),
           where("checkin", "<=", checkout),
           where("checkout", ">=", checkin)
         );
-
         const snapshot = await getDocs(q);
-
         if (!snapshot.empty) {
-          Swal.fire({
-            title: '⚠️ Indisponível!',
-            text: 'O chalé já está reservado nessas datas.',
-            icon: 'error',
-            confirmButtonText: 'Ok'
-          });
+          Swal.fire({ title: '⚠️ Indisponível!', icon: 'error' });
           return;
         }
 
-        await addDoc(reservasRef, {
-          chaleId,
-          checkin,
-          checkout,
-          cliente,
-          telefone,
-          timestamp: new Date().toISOString()
+        const docRef = await addDoc(reservasRef, {
+          chaleId, checkin, checkout, cliente, telefone, timestamp: new Date().toISOString()
         });
 
+        const diarias = calcularDiarias(checkin, checkout);
+        const precoPorDiaria = 200;
+        const valorTotal = diarias * precoPorDiaria;
+        const pix = "00020126330014BR.GOV.BCB.PIX01145589996607709025804000053039865405410100";
+
         Swal.fire({
-          title: '✅ Reserva Confirmada!',
-          html: `<p>Chalé: <b>${chaleId}</b></p>
-                 <p>Cliente: <b>${cliente}</b></p>
-                 <p>Check-in: <b>${checkin}</b></p>
-                 <p>Check-out: <b>${checkout}</b></p>`,
-          icon: 'success',
-          confirmButtonText: 'Ok'
+          title: '💰 Reserva quase concluída!',
+          html: `
+            <p>Chalé: <b>${chaleId}</b></p>
+            <p>Cliente: <b>${cliente}</b></p>
+            <p>Check-in: <b>${checkin}</b></p>
+            <p>Check-out: <b>${checkout}</b></p>
+            <p>📅 Diárias: <b>${diarias}</b></p>
+            <p>💵 Valor total: <b>R$ ${valorTotal},00</b></p>
+            <p>📌 PIX para pagamento: <b>${pix}</b></p>
+          `,
+          showCancelButton: true,
+          confirmButtonText: 'Enviar comprovante',
+          cancelButtonText: 'Cancelar',
+          icon: 'info'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            const mensagem = `Olá! Quero enviar o comprovante da reserva:%0AChalé: ${chaleId}%0ACliente: ${cliente}%0ACheck-in: ${checkin}%0ACheck-out: ${checkout}%0ADIÁRIAS: ${diarias}%0ATOTAL: R$ ${valorTotal},00%0APIX: ${pix}`;
+            window.open(`https://wa.me/55839996607709?text=${mensagem}`, '_blank');
+          } else {
+            await deleteDoc(doc(db, "reservas", docRef.id));
+          }
+          carregarReservas();
         });
 
         cardBody.querySelector('.cliente').value = '';
@@ -165,20 +327,27 @@
         cardBody.querySelector('.checkout').value = '';
         cardBody.querySelector('.telefone').value = '';
 
-        carregarReservas();
       } catch (error) {
         console.error("Erro ao reservar:", error);
-        Swal.fire({
-          title: '❌ Erro ao reservar',
-          text: 'Ocorreu um problema, veja o console.',
-          icon: 'error',
-          confirmButtonText: 'Ok'
-        });
+        Swal.fire({ title: '❌ Erro ao reservar', text: error.message, icon: 'error' });
       }
     }
 
     window.addEventListener('DOMContentLoaded', carregarReservas);
-  </script>
-</body>
 
+    
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    Inputmask({
+      mask: "+55 (99) 99999-9999",
+      showMaskOnHover: false,
+      placeholder: "_"
+    }).mask(".telefone");
+  });
+</script>
+
+
+</body>
 </html>
